@@ -1,6 +1,10 @@
+group 'wanzi'
+version '1.0.0'
+
 apply plugin: 'war'
 apply plugin: 'idea'
 apply plugin: 'org.akhikhl.gretty'
+apply plugin: 'maven'
 
 buildscript {
     repositories {
@@ -28,6 +32,20 @@ dependencies {
 gretty {
     httpPort = 8090
     contextPath = '/simple-web'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "${nexusUrl}/mvn-local/") {
+                authentication(userName: nexusUsername, password: nexusPassword)
+            }
+
+            pom.version = "${project.version}"
+            pom.artifactId = "${project.name}"
+            pom.groupId = "${project.group}"
+        }
+    }
 }
 
 task wrapper(type : Wrapper) {
