@@ -1,0 +1,35 @@
+apply plugin: 'war'
+apply plugin: 'idea'
+apply plugin: 'org.akhikhl.gretty'
+
+buildscript {
+    repositories {
+        maven {
+            url "${nexusUrl}/maven-central/"
+        }
+    }
+
+    dependencies {
+        classpath 'org.akhikhl.gretty:gretty:2.0.0'
+    }
+}
+
+repositories {
+    maven {
+        url "${nexusUrl}/maven-central/"
+    }
+}
+
+dependencies {
+    providedCompile 'javax.servlet:servlet-api:2.5'
+    runtime 'javax.servlet:jstl:1.1.2'
+}
+
+gretty {
+    httpPort = 8090
+    contextPath = '/simple-web'
+}
+
+task wrapper(type : Wrapper) {
+    gradleVersion = '4.4.1'
+}
