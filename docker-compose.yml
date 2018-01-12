@@ -1,0 +1,41 @@
+version: '3'
+services:
+  nexus-service:
+    image: sonatype/nexus3:latest
+    container_name: nexus3-container
+    hostname: wanzi
+    ports:
+      - "32768:8081"
+      - "50000:50000"
+      - "50001:50001"
+      - "50002:50002"
+    volumes:
+      - ~/Documents/Kitematic/nexus3-container/nexus-data:/nexus-data
+    networks:
+      nexus-net:
+        ipv4_address: 172.16.238.10
+    restart: always
+
+  jenkins-service:
+    image: localhost:50000/jenkins/jenkins:lts
+    container_name: jenkins-container
+    hostname: wanzi
+    volumes:
+      - ~/Documents/jenkins_home:/var/jenkins_home
+    networks:
+      nexus-net:
+        ipv4_address: 172.16.238.11
+    ports:
+      - "51001:8080"
+      - "51002:50000"
+    depends_on:
+      - nexus-service
+    restart: always
+
+networks:
+  nexus-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24
